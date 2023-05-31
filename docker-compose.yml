@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  webserver:
+    build: 
+      context: ./bin/php7
+    container_name: 'PHPWebServer'
+    restart: 'always'
+    ports:
+      - "${HOST_WEBSERVER_HTTP_PORT}:80"
+      - "${HOST_WEBSERVER_HTTPS_PORT}:443"
+    links: 
+      - mysql
+    volumes: 
+      - ./html:/var/www/html
+      - ./laravel:/var/laravel
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./config/vhosts:/etc/apache2/sites-enabled
+      - ./logs/apache2:/var/log/apache2
+  mysql:
+    image: mariadb:10.6.13
+    container_name: 'MariaDBServer'
+    restart: 'always'
+#    ports:
+#      - "${HOST_MYSQL_PORT}:3306"
+    volumes: 
+      - ./data/mysql:/var/lib/mysql
+      - ./logs/mysql:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 'PHPMyadminServer'
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+#      PMA_USER: ${MYSQL_USER}
+#      PMA_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+    ports:
+      - "${HOST_PHPMYADMIN_PORT}:80"
+    volumes: 
+      - ./sessions:/sessions
