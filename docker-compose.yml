@@ -37,6 +37,7 @@ services:
     links:
       - mysql
     environment:
+      UPLOAD_LIMIT: 300M
       PMA_HOST: mysql
       PMA_PORT: 3306
 #      PMA_USER: ${MYSQL_USER}
