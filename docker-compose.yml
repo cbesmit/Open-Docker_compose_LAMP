@@ -18,7 +18,7 @@ services:
       - ./config/vhosts:/etc/apache2/sites-enabled
       - ./logs/apache2:/var/log/apache2
   mysql:
-    image: mariadb:10.6.13
+    image: mariadb:10.11.3
     container_name: 'MariaDBServer'
     restart: 'always'
 #    ports:
